@@ -16,6 +16,11 @@ execution. The terms:
 - Reconciliation is in scope. An agent may file observed-state
   snapshots and drift entries in 05-evidence/ as pull requests, under
   the same ratification rule as any other change.
+- Evidence carries provenance. An observation is a claim, not a fact:
+  every evidence artifact declares its state kind, source, method,
+  time, and confidence (DEC-003), and a drift item classifies the
+  mismatch (defect, model-error, sensor-error, undetermined) rather
+  than presuming the estate is wrong.
 - Views are generated. Never hand-edit files in 05-evidence/views/.
   To change a drawing, change 00-meta-model/catalog.toml or
   00-meta-model/views.toml and run 00-meta-model/render_views.py.

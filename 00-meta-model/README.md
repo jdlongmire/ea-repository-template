@@ -28,8 +28,10 @@ the machinery that keeps the rest of the tree honest.
 - `verify.py`: the verifier. Checks layout, artifact headers against
   `schemas.json`, cross-references between artifacts, pairing between
   policy-enforced standards and their compiled form in `policies/`,
-  the catalog against the artifacts, and the generated views against
-  the catalog (a stale or unregistered drawing fails). Run it before
+  the catalog against the artifacts, the generated views against
+  the catalog (a stale or unregistered drawing fails), and the
+  evidence model: state kinds, provenance fields, drift
+  classifications, and evidence citations (DEC-003). Run it before
   proposing any change:
 
       python3 00-meta-model/verify.py
