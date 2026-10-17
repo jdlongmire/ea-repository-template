@@ -15,6 +15,16 @@ Checks, in order:
   4. Policy pairing: a standard with enforcement: policy has a compiled
      policy at policies/<id-lowercase>.rego, and every policy file pairs
      back to such a standard.
+  5. Catalog: 00-meta-model/catalog.toml parses; every element is a
+     typed artifact in this repository (same id, type, name, level);
+     every relation endpoint exists and its verb is in the vocabulary
+     fixed in schemas.json.
+  6. Views: 00-meta-model/views.toml parses; every registered view
+     names a valid level and focus area, shows only catalogued
+     elements, and carries consistent completeness flags; the
+     generated outputs in 05-evidence/views/ are exactly what
+     render_views.py produces from the catalog (no stale drawings, no
+     unregistered ones).
 
 Front matter is a flat subset of YAML: `key: value` lines and inline lists
 `key: [A, B]`. That subset is deliberate: it is all a typed header needs,
@@ -22,9 +32,11 @@ and it parses with the standard library only. No third-party packages.
 
 Exit code 0 means every check passed. Failures print one per line.
 """
+import importlib.util
 import json
 import re
 import sys
+import tomllib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -159,11 +171,116 @@ def check_policy_pairing(artifacts):
             errors.append(f"policy: policies/{stem}.rego has no matching policy-enforced standard")
 
 
+def check_catalog(artifacts):
+    path = ROOT / "00-meta-model" / "catalog.toml"
+    if not path.exists():
+        errors.append("catalog: 00-meta-model/catalog.toml is missing")
+        return None
+    try:
+        with open(path, "rb") as fh:
+            catalog = tomllib.load(fh)
+    except tomllib.TOMLDecodeError as exc:
+        errors.append(f"catalog: catalog.toml does not parse ({exc})")
+        return None
+    elements = {}
+    for el in catalog.get("element", []):
+        eid = el.get("id")
+        if eid in elements:
+            errors.append(f"catalog: duplicate element id {eid}")
+        elements[eid] = el
+        art = artifacts.get(eid)
+        if art is None:
+            errors.append(f"catalog: element {eid} has no artifact in the repository")
+            continue
+        _, f = art
+        for field in ("type", "name", "level"):
+            if el.get(field) != f.get(field):
+                errors.append(f"catalog: element {eid} {field} '{el.get(field)}' does not match its artifact header '{f.get(field)}'")
+    verbs = set(SCHEMAS.get("relation_types", []))
+    for rel in catalog.get("relation", []):
+        for endpoint in ("source", "target"):
+            if rel.get(endpoint) not in elements:
+                errors.append(f"catalog: relation references unknown element {rel.get(endpoint)}")
+        if rel.get("relation") not in verbs:
+            errors.append(f"catalog: relation verb '{rel.get('relation')}' is not in schemas.json relation_types")
+    return catalog
+
+
+def check_views(catalog):
+    path = ROOT / "00-meta-model" / "views.toml"
+    if not path.exists():
+        errors.append("views: 00-meta-model/views.toml is missing")
+        return
+    try:
+        with open(path, "rb") as fh:
+            register = tomllib.load(fh)
+    except tomllib.TOMLDecodeError as exc:
+        errors.append(f"views: views.toml does not parse ({exc})")
+        return
+    errors_before = len(errors)
+    element_ids = {el["id"] for el in catalog.get("element", [])} if catalog else set()
+    relations = {(r["source"], r["relation"], r["target"]) for r in catalog.get("relation", [])} if catalog else set()
+    seen = set()
+    for view in register.get("view", []):
+        vid = view.get("id", "<no-id>")
+        if not re.match(r"^VW-[0-9]{3}$", str(vid)):
+            errors.append(f"views: view id '{vid}' does not match VW-NNN")
+        if vid in seen:
+            errors.append(f"views: duplicate view id {vid}")
+        seen.add(vid)
+        if view.get("level") not in SCHEMAS.get("view_levels", []):
+            errors.append(f"views: {vid} level '{view.get('level')}' is not a valid view level")
+        if view.get("focus") not in SCHEMAS.get("view_focus_areas", []):
+            errors.append(f"views: {vid} focus '{view.get('focus')}' is not a valid focus area")
+        for eid in view.get("elements", []):
+            if eid not in element_ids:
+                errors.append(f"views: {vid} shows element {eid} which is not in the catalog")
+        for flag in ("membership_complete", "relation_complete"):
+            if not isinstance(view.get(flag), bool):
+                errors.append(f"views: {vid} must declare {flag} as true or false")
+        declared = view.get("relations")
+        if declared is not None:
+            if view.get("relation_complete") is not False:
+                errors.append(f"views: {vid} declares a relation subset, so relation_complete must be false")
+            shown = set(view.get("elements", []))
+            for item in declared:
+                parts = item.split(" ")
+                if len(parts) != 3:
+                    errors.append(f"views: {vid} relation entry '{item}' is not 'SOURCE verb TARGET'")
+                    continue
+                triple = tuple(parts)
+                if triple not in relations:
+                    errors.append(f"views: {vid} declares relation '{item}' which is not in the catalog")
+                elif triple[0] not in shown or triple[2] not in shown:
+                    errors.append(f"views: {vid} declares relation '{item}' with an endpoint it does not show")
+        elif view.get("relation_complete") is not True:
+            errors.append(f"views: {vid} draws every catalogued relation between its elements, so relation_complete must be true (or declare a subset)")
+    if len(errors) > errors_before:
+        return
+    spec = importlib.util.spec_from_file_location("render_views", ROOT / "00-meta-model" / "render_views.py")
+    renderer = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(renderer)
+    expected = renderer.expected_files()
+    out_dir = ROOT / "05-evidence" / "views"
+    for rel, content in expected.items():
+        target = ROOT / rel
+        if not target.exists():
+            errors.append(f"views: generated output {rel} is missing; run python3 00-meta-model/render_views.py")
+        elif target.read_text() != content:
+            errors.append(f"views: generated output {rel} is stale; run python3 00-meta-model/render_views.py")
+    if out_dir.is_dir():
+        for f in sorted(out_dir.iterdir()):
+            if f.is_file() and f.name != "README.md" and f"05-evidence/views/{f.name}" not in expected:
+                errors.append(f"views: 05-evidence/views/{f.name} is not a registered view output; views are generated, not added by hand")
+
+
 def main():
     check_layout()
     artifacts = check_headers(collect_artifacts())
     check_references(artifacts)
     check_policy_pairing(artifacts)
+    catalog = check_catalog(artifacts)
+    check_views(catalog)
     if "--emit-json" in sys.argv:
         out = sys.argv[sys.argv.index("--emit-json") + 1]
         data = {"artifacts": [f for _, f in sorted(artifacts.values(), key=lambda x: x[1].get("id", ""))]}
@@ -174,7 +291,7 @@ def main():
         for e in errors:
             print(" -", e)
         sys.exit(1)
-    print(f"OK: layout, {len(artifacts)} artifact headers, references, policy pairing all pass.")
+    print(f"OK: layout, {len(artifacts)} artifact headers, references, policy pairing, catalog, and view fidelity all pass.")
 
 
 if __name__ == "__main__":

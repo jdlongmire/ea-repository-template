@@ -1,0 +1,174 @@
+# The model of record: architecture elements and their relations.
+#
+# Every element is a typed artifact somewhere in this repository; the
+# verifier binds the two together (same id, type, name, and level), so
+# the catalog and the artifacts are two projections of one record, not
+# two records that can drift apart. Relations use the vocabulary fixed
+# in schemas.json ("relation_types"). Views registered in views.toml
+# are generated from this catalog by render_views.py and are never
+# drawn by hand.
+
+[[element]]
+id = "STR-001"
+type = "strategy"
+name = "Digital-First Service Strategy"
+level = "enterprise"
+
+[[element]]
+id = "REQ-001"
+type = "requirement"
+name = "Claims Data Classified at Intake"
+level = "enterprise"
+
+[[element]]
+id = "CAP-001"
+type = "capability"
+name = "Claims Intake and Processing"
+level = "enterprise"
+
+[[element]]
+id = "RM-001"
+type = "roadmap"
+name = "Claims Modernization Roadmap"
+level = "enterprise"
+
+[[element]]
+id = "STD-DATA-002"
+type = "standard"
+name = "Data Classification and Handling"
+level = "enterprise"
+
+[[element]]
+id = "STD-SEC-001"
+type = "standard"
+name = "Identity and Access for Systems"
+level = "enterprise"
+
+[[element]]
+id = "STR-002"
+type = "strategy"
+name = "Claims Platform Consolidation Strategy"
+level = "systems"
+
+[[element]]
+id = "REQ-002"
+type = "requirement"
+name = "Idempotent Claim Submission"
+level = "systems"
+
+[[element]]
+id = "SYS-014"
+type = "system"
+name = "Claims Processing Platform"
+level = "systems"
+
+[[element]]
+id = "INT-003"
+type = "interface"
+name = "Claims Intake API"
+level = "systems"
+
+[[element]]
+id = "INT-007"
+type = "interface"
+name = "Payment Disbursement API"
+level = "systems"
+
+[[element]]
+id = "ADR-001"
+type = "decision"
+name = "Event-Driven Integration for Claims Intake"
+level = "systems"
+
+[[element]]
+id = "RM-002"
+type = "roadmap"
+name = "Claims Platform Delivery Roadmap"
+level = "systems"
+
+[[element]]
+id = "SOL-001"
+type = "solution"
+name = "Mobile Claims Intake"
+level = "solutions"
+
+[[element]]
+id = "WP-001"
+type = "work-package"
+name = "Ratify Claims Platform Target Architecture"
+level = "cross-cutting"
+
+[[relation]]
+source = "SYS-014"
+relation = "realizes"
+target = "CAP-001"
+
+[[relation]]
+source = "SYS-014"
+relation = "uses"
+target = "INT-003"
+
+[[relation]]
+source = "SYS-014"
+relation = "uses"
+target = "INT-007"
+
+[[relation]]
+source = "SYS-014"
+relation = "bound-by"
+target = "STD-DATA-002"
+
+[[relation]]
+source = "SYS-014"
+relation = "bound-by"
+target = "STD-SEC-001"
+
+[[relation]]
+source = "SYS-014"
+relation = "decided-by"
+target = "ADR-001"
+
+[[relation]]
+source = "SOL-001"
+relation = "uses"
+target = "SYS-014"
+
+[[relation]]
+source = "SOL-001"
+relation = "uses"
+target = "INT-003"
+
+[[relation]]
+source = "REQ-001"
+relation = "allocated-to"
+target = "CAP-001"
+
+[[relation]]
+source = "REQ-001"
+relation = "allocated-to"
+target = "SYS-014"
+
+[[relation]]
+source = "REQ-002"
+relation = "allocated-to"
+target = "SYS-014"
+
+[[relation]]
+source = "REQ-002"
+relation = "allocated-to"
+target = "INT-003"
+
+[[relation]]
+source = "WP-001"
+relation = "delivers"
+target = "RM-001"
+
+[[relation]]
+source = "RM-002"
+relation = "depends-on"
+target = "RM-001"
+
+[[relation]]
+source = "STR-002"
+relation = "depends-on"
+target = "STR-001"

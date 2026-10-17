@@ -16,6 +16,9 @@ execution. The terms:
 - Reconciliation is in scope. An agent may file observed-state
   snapshots and drift entries in 05-evidence/ as pull requests, under
   the same ratification rule as any other change.
+- Views are generated. Never hand-edit files in 05-evidence/views/.
+  To change a drawing, change 00-meta-model/catalog.toml or
+  00-meta-model/views.toml and run 00-meta-model/render_views.py.
 
 An agent that cannot meet a term says so in the pull request rather
 than working around it.

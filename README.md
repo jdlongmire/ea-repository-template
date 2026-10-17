@@ -16,12 +16,12 @@ repository of your own.
 
 | Path | Holds |
 |------|-------|
-| `00-meta-model/` | Artifact schemas, the verifier, decisions about the repository itself |
+| `00-meta-model/` | Artifact schemas, the element-and-relation catalog, the view register, the renderer, the verifier, decisions about the repository itself |
 | `01-enterprise/` | Enterprise level: `1.1-strategy`, `1.2-architecture`, `1.3-roadmaps`, `1.4-standards` |
 | `02-systems/` | One folder per system, each with the same four focus areas (`2.1` to `2.4`) |
 | `03-solutions/` | One folder per solution, each with the same four focus areas (`3.1` to `3.4`) |
 | `04-work-packages/` | Bounded units of architecture work, worked as pull requests |
-| `05-evidence/` | Observed state, validation results, the drift register |
+| `05-evidence/` | Observed state, validation results, the drift register, generated view evidence |
 | `06-operations/` | Runbooks: reconciliation cadence, admission, agent access |
 | `policies/` | Standards compiled to policy-as-code (Open Policy Agent) |
 | `CODEOWNERS` | The ratification map: who approves changes to what |
@@ -30,10 +30,17 @@ repository of your own.
 ## How change works
 
 Propose (pull request) -> validate (CI: layout, headers, references,
-compiled policies) -> ratify (CODEOWNERS review, branch protection) ->
-merge (the change becomes the record) -> reconcile (observed state is
-diffed against the model; drift is filed in `05-evidence/` as a defect
-and opens the next proposal).
+compiled policies, catalog, generated views) -> ratify (CODEOWNERS
+review, branch protection) -> merge (the change becomes the record)
+-> reconcile (observed state is diffed against the model; drift is
+filed in `05-evidence/` as a defect and opens the next proposal).
+
+Diagrams are not drawn here. The catalog (00-meta-model/catalog.toml)
+is the model of record; views are registered in
+00-meta-model/views.toml and generated into `05-evidence/views/` by
+00-meta-model/render_views.py. A view shows exactly its registered
+elements and the catalogued relations between them, and CI fails on a
+stale or unregistered drawing.
 
 ## Quickstart
 
@@ -54,7 +61,10 @@ every mechanism fires at least once: an enterprise capability
 standards, one standard compiled to a working OPA policy
 (STD-DATA-002), an architecture decision (ADR-001), a closed work
 package (WP-001), and an open drift item (DRIFT-001) showing the
-reconciliation loop with a defect in it, on purpose.
+reconciliation loop with a defect in it, on purpose. The same example
+populates the catalog (15 elements, 15 relations) and all six
+registered views, including a standards register view (VW-003) and a
+requirements realization view (VW-005) generated from the catalog.
 
 ## License
 

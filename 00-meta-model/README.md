@@ -7,10 +7,30 @@ the machinery that keeps the rest of the tree honest.
 - `schemas.json`: the artifact types, their required fields, the legal
   levels and statuses, and the id pattern. Machine-readable on purpose:
   this file is data, not documentation about data.
+- `catalog.toml`: the model of record. Architecture elements and
+  their typed relations. Every element is a typed artifact in this
+  repository; the verifier binds the two together (same id, type,
+  name, and level), so the catalog and the artifacts are two
+  projections of one record, not two records that can drift apart.
+  The relation vocabulary is fixed in `schemas.json`.
+- `views.toml`: the view register. Every view names its viewpoint and
+  concern, its level and focus area (Strategy, Architecture,
+  Roadmaps, Standards, or cross-level traceability), the elements it
+  shows, and two completeness flags: whether its element list is the
+  whole of its scope, and whether it draws every catalogued relation
+  between the elements it shows.
+- `render_views.py`: generates each registered view into
+  `05-evidence/views/` as Mermaid source and a rendered SVG. Views
+  are generated, never drawn or edited by hand.
+
+      python3 00-meta-model/render_views.py
+
 - `verify.py`: the verifier. Checks layout, artifact headers against
-  `schemas.json`, cross-references between artifacts, and pairing
-  between policy-enforced standards and their compiled form in
-  `policies/`. Run it before proposing any change:
+  `schemas.json`, cross-references between artifacts, pairing between
+  policy-enforced standards and their compiled form in `policies/`,
+  the catalog against the artifacts, and the generated views against
+  the catalog (a stale or unregistered drawing fails). Run it before
+  proposing any change:
 
       python3 00-meta-model/verify.py
 
