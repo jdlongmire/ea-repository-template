@@ -1,0 +1,7 @@
+# CODEOWNERS is the ratification map: each path names who must approve
+# a change to it. Replace the handle below with your architecture
+# board's reviewers (individuals or teams) before first real use.
+* @jdlongmire
+/00-meta-model/ @jdlongmire
+/01-enterprise/1.4-standards/ @jdlongmire
+/policies/ @jdlongmire

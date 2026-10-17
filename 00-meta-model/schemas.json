@@ -1,0 +1,17 @@
+{
+  "common_required": ["id", "type", "name", "level", "owner", "status"],
+  "id_pattern": "^[A-Z]{2,5}(-[A-Z0-9]+)*-[0-9]{3}$",
+  "levels": ["enterprise", "systems", "solutions", "cross-cutting"],
+  "statuses": ["draft", "proposed", "ratified", "current", "target", "deprecated", "closed"],
+  "types": {
+    "strategy": {},
+    "capability": {},
+    "system": {"extra_required": ["interfaces", "standards"]},
+    "interface": {},
+    "standard": {"extra_required": ["enforcement"], "enforcement_values": ["policy", "review"]},
+    "decision": {},
+    "roadmap": {},
+    "work-package": {},
+    "solution": {"extra_required": ["system"]}
+  }
+}

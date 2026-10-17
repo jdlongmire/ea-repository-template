@@ -1,0 +1,23 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify layout, headers, references, policy pairing
+        run: python3 00-meta-model/verify.py --emit-json artifacts.json
+      - name: Install OPA
+        run: |
+          curl -L -o opa https://openpolicyagent.org/downloads/latest/opa_linux_amd64_static
+          chmod +x opa
+      - name: Evaluate compiled policies
+        run: ./opa eval --fail --data policies/ --input artifacts.json "count(data.architecture.deny) == 0"
