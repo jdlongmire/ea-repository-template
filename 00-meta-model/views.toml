@@ -1,0 +1,83 @@
+# The view register: every generated view, its viewpoint, and its scope.
+#
+# A view is a registered projection of catalog.toml, not an
+# illustration. Each entry names its viewpoint and concern, its level
+# and focus area, and the elements it shows. render_views.py draws
+# exactly the registered elements and, between them, the catalogued
+# relations. Two completeness flags state the contract:
+#
+#   membership_complete: the element list is the whole of the
+#     viewpoint's scope, not a selection from it.
+#   relation_complete: every catalogued relation between the shown
+#     elements is drawn. A view that draws only some relations lists
+#     them explicitly in a "relations" field ("SOURCE verb TARGET")
+#     and sets this flag to false.
+#
+# Generated outputs land in 05-evidence/views/ and are never edited by
+# hand; the verifier fails on stale or unregistered outputs.
+
+[[view]]
+id = "VW-001"
+title = "Capability Realization"
+viewpoint = "Capability realization"
+concern = "Which systems and solutions realize the enterprise capability"
+level = "enterprise"
+focus = "architecture"
+elements = ["CAP-001", "SYS-014", "SOL-001"]
+membership_complete = true
+relation_complete = true
+
+[[view]]
+id = "VW-002"
+title = "System Cooperation"
+viewpoint = "System cooperation"
+concern = "How the platform, its interfaces, its consuming solution, and its governing decision fit together"
+level = "systems"
+focus = "architecture"
+elements = ["SYS-014", "INT-003", "INT-007", "SOL-001", "ADR-001"]
+membership_complete = true
+relation_complete = true
+
+[[view]]
+id = "VW-003"
+title = "Standards Register"
+viewpoint = "Standards in force"
+concern = "Which standards govern, how each is enforced, and what binds to them"
+level = "enterprise"
+focus = "standards"
+elements = ["STD-DATA-002", "STD-SEC-001", "SYS-014"]
+membership_complete = true
+relation_complete = true
+
+[[view]]
+id = "VW-004"
+title = "Roadmap and Delivery"
+viewpoint = "Roadmaps and the work that delivers them"
+concern = "How strategy descends into roadmaps at two levels, and which work package delivers the enterprise roadmap"
+level = "enterprise"
+focus = "roadmaps"
+elements = ["STR-001", "STR-002", "RM-001", "RM-002", "WP-001"]
+membership_complete = true
+relation_complete = true
+
+[[view]]
+id = "VW-005"
+title = "Requirements Realization"
+viewpoint = "Requirements realization"
+concern = "How each requirement is allocated to the capability, system, and interface that realize it"
+level = "cross-level"
+focus = "traceability"
+elements = ["REQ-001", "REQ-002", "CAP-001", "SYS-014", "INT-003"]
+membership_complete = true
+relation_complete = true
+
+[[view]]
+id = "VW-006"
+title = "Solution Composition"
+viewpoint = "Solution composition"
+concern = "What the solution is built on: its system and the interface it files against"
+level = "solutions"
+focus = "architecture"
+elements = ["SOL-001", "SYS-014", "INT-003"]
+membership_complete = true
+relation_complete = true

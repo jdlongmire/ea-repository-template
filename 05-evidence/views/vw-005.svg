@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="736" height="272" viewBox="0 0 736 272">
+<title>VW-005 Requirements Realization</title>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="20" y="32" font-family="sans-serif" font-size="11" fill="#666666">enterprise</text>
+<text x="20" y="148" font-family="sans-serif" font-size="11" fill="#666666">systems</text>
+<line x1="368" y1="61" x2="128" y2="61" stroke="#888888" stroke-width="1.2"/>
+<text x="248" y="61" font-family="sans-serif" font-size="10" fill="#555555" text-anchor="middle">allocated-to</text>
+<line x1="368" y1="61" x2="608" y2="177" stroke="#888888" stroke-width="1.2"/>
+<text x="488" y="119" font-family="sans-serif" font-size="10" fill="#555555" text-anchor="middle">allocated-to</text>
+<line x1="368" y1="177" x2="128" y2="177" stroke="#888888" stroke-width="1.2"/>
+<text x="248" y="177" font-family="sans-serif" font-size="10" fill="#555555" text-anchor="middle">allocated-to</text>
+<line x1="368" y1="177" x2="608" y2="177" stroke="#888888" stroke-width="1.2"/>
+<text x="488" y="177" font-family="sans-serif" font-size="10" fill="#555555" text-anchor="middle">allocated-to</text>
+<line x1="608" y1="177" x2="128" y2="61" stroke="#888888" stroke-width="1.2"/>
+<text x="368" y="119" font-family="sans-serif" font-size="10" fill="#555555" text-anchor="middle">realizes</text>
+<line x1="608" y1="177" x2="128" y2="177" stroke="#888888" stroke-width="1.2"/>
+<text x="368" y="177" font-family="sans-serif" font-size="10" fill="#555555" text-anchor="middle">uses</text>
+<rect x="20" y="38" width="216" height="46" rx="6" fill="#eef1f8" stroke="#1e2456"/>
+<text x="128.0" y="58" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1e2456" text-anchor="middle">CAP-001</text>
+<text x="128.0" y="74" font-family="sans-serif" font-size="10" fill="#333333" text-anchor="middle">Claims Intake and Processing</text>
+<rect x="20" y="154" width="216" height="46" rx="6" fill="#eef1f8" stroke="#1e2456"/>
+<text x="128.0" y="174" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1e2456" text-anchor="middle">INT-003</text>
+<text x="128.0" y="190" font-family="sans-serif" font-size="10" fill="#333333" text-anchor="middle">Claims Intake API</text>
+<rect x="260" y="38" width="216" height="46" rx="6" fill="#eef1f8" stroke="#1e2456"/>
+<text x="368.0" y="58" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1e2456" text-anchor="middle">REQ-001</text>
+<text x="368.0" y="74" font-family="sans-serif" font-size="10" fill="#333333" text-anchor="middle">Claims Data Classified at Intake</text>
+<rect x="260" y="154" width="216" height="46" rx="6" fill="#eef1f8" stroke="#1e2456"/>
+<text x="368.0" y="174" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1e2456" text-anchor="middle">REQ-002</text>
+<text x="368.0" y="190" font-family="sans-serif" font-size="10" fill="#333333" text-anchor="middle">Idempotent Claim Submission</text>
+<rect x="500" y="154" width="216" height="46" rx="6" fill="#eef1f8" stroke="#1e2456"/>
+<text x="608.0" y="174" font-family="sans-serif" font-size="12" font-weight="bold" fill="#1e2456" text-anchor="middle">SYS-014</text>
+<text x="608.0" y="190" font-family="sans-serif" font-size="10" fill="#333333" text-anchor="middle">Claims Processing Platform</text>
+</svg>

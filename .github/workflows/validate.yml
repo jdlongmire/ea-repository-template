@@ -13,7 +13,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Verify layout, headers, references, policy pairing
+      - name: Verify layout, headers, references, policy pairing, catalog, views
         run: python3 00-meta-model/verify.py --emit-json artifacts.json
       - name: Install OPA
         run: |

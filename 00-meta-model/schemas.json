@@ -3,8 +3,12 @@
   "id_pattern": "^[A-Z]{2,5}(-[A-Z0-9]+)*-[0-9]{3}$",
   "levels": ["enterprise", "systems", "solutions", "cross-cutting"],
   "statuses": ["draft", "proposed", "ratified", "current", "target", "deprecated", "closed"],
+  "relation_types": ["realizes", "uses", "bound-by", "allocated-to", "decided-by", "delivers", "depends-on"],
+  "view_levels": ["enterprise", "systems", "solutions", "cross-level"],
+  "view_focus_areas": ["strategy", "architecture", "roadmaps", "standards", "traceability"],
   "types": {
     "strategy": {},
+    "requirement": {},
     "capability": {},
     "system": {"extra_required": ["interfaces", "standards"]},
     "interface": {},
