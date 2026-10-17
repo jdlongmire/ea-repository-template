@@ -1,3 +1,18 @@
+---
+id: OBS-001
+type: evidence
+name: Observed State Snapshot 2026-10-17
+level: systems
+owner: enterprise-architecture
+status: current
+state_kind: observed
+subject: SYS-014
+source: platform deployment inventory
+method: direct inspection of deployed endpoints
+observed_at: 2026-10-17
+confidence: high
+---
+
 # Observed State Snapshot, 2026-10-17
 
 Source: provider contract registry and platform deployment inventory.

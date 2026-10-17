@@ -25,6 +25,12 @@ Checks, in order:
      generated outputs in 05-evidence/views/ are exactly what
      render_views.py produces from the catalog (no stale drawings, no
      unregistered ones).
+  7. Evidence: artifacts under 05-evidence/snapshots/ and
+     05-evidence/drift/ carry the evidence model: a state kind
+     (declared, observed, inferred), provenance (source, method,
+     observed_at, confidence), and a subject that resolves. Drift
+     items classify the mismatch (defect, model-error, sensor-error,
+     undetermined) and cite evidence artifacts that resolve.
 
 Front matter is a flat subset of YAML: `key: value` lines and inline lists
 `key: [A, B]`. That subset is deliberate: it is all a typed header needs,
@@ -56,6 +62,7 @@ LEVEL_SUBFOLDERS = {
     "03-solutions": ["3.1-strategy", "3.2-architecture", "3.3-roadmaps", "3.4-standards"],
 }
 ARTIFACT_AREAS = ["01-enterprise", "02-systems", "03-solutions", "04-work-packages"]
+EVIDENCE_AREAS = ["05-evidence/snapshots", "05-evidence/drift"]
 
 errors = []
 
@@ -102,7 +109,7 @@ def check_layout():
 
 def collect_artifacts():
     artifacts = {}
-    for area in ARTIFACT_AREAS:
+    for area in ARTIFACT_AREAS + EVIDENCE_AREAS:
         base = ROOT / area
         if not base.is_dir():
             continue
@@ -140,6 +147,9 @@ def check_headers(artifacts):
                 errors.append(f"header: {rel} type {t} missing field '{req}'")
         if "enforcement_values" in spec and f.get("enforcement") not in spec["enforcement_values"]:
             errors.append(f"header: {rel} enforcement must be one of {spec['enforcement_values']}")
+        for field, values in spec.get("field_values", {}).items():
+            if f.get(field) not in values:
+                errors.append(f"header: {rel} {field} must be one of {values}")
         if f.get("level") not in SCHEMAS["levels"]:
             errors.append(f"header: {rel} level '{f.get('level')}' not in {SCHEMAS['levels']}")
         if f.get("status") not in SCHEMAS["statuses"]:
@@ -156,6 +166,16 @@ def check_references(artifacts):
                     errors.append(f"reference: {rel} references unknown id {ref}")
         if f.get("type") == "solution" and f.get("system") not in ids:
             errors.append(f"reference: {rel} references unknown system {f.get('system')}")
+        if f.get("type") == "evidence" and f.get("subject") not in ids:
+            errors.append(f"reference: {rel} evidence subject {f.get('subject')} does not resolve to an artifact")
+        if f.get("type") == "drift":
+            if f.get("subject") not in ids:
+                errors.append(f"reference: {rel} drift subject {f.get('subject')} does not resolve to an artifact")
+            for ref in f.get("evidence", []):
+                if ref not in ids:
+                    errors.append(f"reference: {rel} cites unknown evidence {ref}")
+                elif artifacts[ref][1].get("type") != "evidence":
+                    errors.append(f"reference: {rel} cites {ref}, which is not an evidence artifact")
 
 
 def check_policy_pairing(artifacts):
@@ -291,7 +311,7 @@ def main():
         for e in errors:
             print(" -", e)
         sys.exit(1)
-    print(f"OK: layout, {len(artifacts)} artifact headers, references, policy pairing, catalog, and view fidelity all pass.")
+    print(f"OK: layout, {len(artifacts)} artifact headers, references, policy pairing, catalog, view fidelity, and evidence all pass.")
 
 
 if __name__ == "__main__":

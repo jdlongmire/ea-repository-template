@@ -21,7 +21,7 @@ repository of your own.
 | `02-systems/` | One folder per system, each with the same four focus areas (`2.1` to `2.4`) |
 | `03-solutions/` | One folder per solution, each with the same four focus areas (`3.1` to `3.4`) |
 | `04-work-packages/` | Bounded units of architecture work, worked as pull requests |
-| `05-evidence/` | Observed state, validation results, the drift register, generated view evidence |
+| `05-evidence/` | Evidence artifacts with provenance (declared, observed, inferred), the drift register, generated view evidence |
 | `06-operations/` | Runbooks: reconciliation cadence, admission, agent access |
 | `policies/` | Standards compiled to policy-as-code (Open Policy Agent) |
 | `CODEOWNERS` | The ratification map: who approves changes to what |

@@ -16,6 +16,10 @@
     "decision": {},
     "roadmap": {},
     "work-package": {},
-    "solution": {"extra_required": ["system"]}
+    "solution": {"extra_required": ["system"]},
+    "evidence": {"extra_required": ["state_kind", "subject", "source", "method", "observed_at", "confidence"],
+      "field_values": {"state_kind": ["declared", "observed", "inferred"], "confidence": ["high", "medium", "low"]}},
+    "drift": {"extra_required": ["subject", "classification", "evidence"],
+      "field_values": {"classification": ["defect", "model-error", "sensor-error", "undetermined"]}}
   }
 }
